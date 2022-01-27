@@ -22,4 +22,4 @@ COPY . /usr/src/app
 
 EXPOSE 8080
 
-CMD [ "/usr/bin/python3", "server.py"]
+CMD [ "python3", "server.py"]

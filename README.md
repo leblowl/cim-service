@@ -26,8 +26,10 @@ python3 server.py
 ```bash
 docker run --name=redis-master redis
 docker build -t cim-service .
-docker run cim-service
+docker run --name cim-service -p 8080:8080 cim-service
 ```
+
+To access the OpenAPI UI, open http://localhost:8080/ui in your browser.
 
 ### To run in Kubernetes:
 
@@ -36,7 +38,7 @@ This will become easier when we have uploaded the docker containers to docker hu
 #### Install redis
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install redis bitnami/redis --values=helm/redis/values.yaml
+helm install redis bitnami/redis
 ```
 
 #### Install docker registry
@@ -52,8 +54,12 @@ docker push localhost:5000/cim-service
 helm install cim-service helm/ --values helm/values.yaml
 ```
 
-
-For manual interaction and a rendered specification open http://localhost:8080/ui/ in your Browser.
+To access the OpenAPI UI, print the local URL and then open it in your browser:
+```bash
+export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services cim-service)
+export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+echo http://$NODE_IP:$NODE_PORT
+```
 
 ## Development:
 
